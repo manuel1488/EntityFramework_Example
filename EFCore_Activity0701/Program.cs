@@ -118,8 +118,7 @@ namespace EFCore_Activity0701
 
 
         private static void GetAllActivitieItemsAsPipeDelimitedString()
-        {
-
+        { 
         }
 
     }
