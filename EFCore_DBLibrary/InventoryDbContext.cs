@@ -18,8 +18,8 @@ namespace EFCore_DBLibrary
         public DbSet<CategoryDetail> CategoryDetails { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<GetItemsForListingDTO> ItemsForListing { get; set; }
-
         public DbSet<AllItemsPipeDelimitedStringDTO> AllItemsOutput { get; set; }
+        public DbSet<GetItemsTotalValueDTO> GetItemsTotalValues { get; set; }
 
 
         //Add a default constructor if scaffolding is needed
@@ -75,6 +75,19 @@ namespace EFCore_DBLibrary
             {
                 x.HasNoKey();
                 x.ToView("AllItemsOutput");
+            });
+
+            modelBuilder.Entity<GetItemsTotalValueDTO>(x => {
+                x.HasNoKey();
+                x.ToView("GetItemsTotalValues");
+            });
+
+            var genreCreateDate = new DateTime(2021, 01, 01);
+            modelBuilder.Entity<Genre>(x =>
+            {
+                x.HasData(
+                    new Genre() { Id = 1, CreatedDate = genreCreateDate, IsActive = 1, IsDeleted = false, Name = "Fantasy" }
+                );
             });
         }
 

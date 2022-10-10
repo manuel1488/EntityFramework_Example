@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using Microsoft.Data.SqlClient;
 
 namespace EFCore_Activity0701
 {
@@ -21,6 +22,8 @@ namespace EFCore_Activity0701
             EnsureItems();
             UpdateItems();
             ListInventory();
+            GetAllActivitieItemsAsPipeDelimitedString();
+            GetItemsTotalValues();
         }
 
         static void BuildOptions()
@@ -119,6 +122,30 @@ namespace EFCore_Activity0701
 
         private static void GetAllActivitieItemsAsPipeDelimitedString()
         { 
+            using(var db = new InventoryDbContext(_optionsBuilder.Options))
+            {
+                var isActiveParam = new SqlParameter("IsActive", 1);
+
+                var result = db.AllItemsOutput.FromSqlRaw("SELECT [dbo].[ItemNamesPipeDelimitedString](@IsActive) AllItems", isActiveParam).
+                    FirstOrDefault();
+
+                Console.WriteLine($"All active Items: {result.AllItems}");
+            }
+        }
+
+        private static void GetItemsTotalValues()
+        {
+            using(var db = new InventoryDbContext(_optionsBuilder.Options))
+            {
+                var isActiveParam = new SqlParameter("IsActive", 1);
+
+                var result = db.GetItemsTotalValues.FromSqlRaw("SELECT * from [dbo].[GetItemsTotalValue](@IsActive)", isActiveParam).ToList();
+
+                foreach(var item in result)
+                {
+                    Console.WriteLine($"New Item {item.Id,-10}|{item.Name,-50}|{item.Quantity,-4}|{item.TotalValue,-5}");
+                }
+            }
         }
 
     }
